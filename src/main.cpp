@@ -4,7 +4,6 @@
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <Geode/modify/MenuLayer.hpp>
-#include "lambdaCallback.hpp"
 #include "TotemAnimation.hpp"
 
 using namespace geode::prelude;

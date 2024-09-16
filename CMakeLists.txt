@@ -8,7 +8,6 @@ project(TotemofUndying VERSION 1.0.0)
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
-    src/lambdaCallback.hpp
     src/TotemAnimation.hpp
     src/TotemAnimation.cpp
 )
