@@ -1,0 +1,31 @@
+{
+	"geode": "3.6.1",
+	"gd": {
+		"win": "2.206",
+		"android": "2.206",
+		"mac": "2.206",
+		"ios": "2.206"
+	},
+	"id": "yellowcat98.totem_of_undying",
+	"name": "Totem of Undying",
+	"version": "v1.0.0",
+	"developer": "YellowCat98",
+	"description": "",
+	"tags": [
+		"joke"
+	],
+	"resources": {
+		"spritesheets": {
+			"totemframes": [
+				"resources/*.png"
+			]
+		}
+	},
+	"dependencies": [
+		{
+			"id": "geode.custom-keybinds",
+			"importance": "required",
+			"version": ">=1.9.0"
+		}
+	]
+}
