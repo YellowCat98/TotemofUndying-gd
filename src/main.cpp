@@ -36,8 +36,6 @@ struct Fields {
 				auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 				auto totem = TotemAnimation::create([=]() {
-					//auto fmod = FMODAudioEngine::sharedEngine();
-					//fmod->playEffect("totemfx.mp3"_spr);
 					m_fields->m_shouldNoclip = false;
 				}, true);
 
@@ -49,6 +47,35 @@ struct Fields {
 			
 			return ListenerResult::Propagate;
 		}, "totem-keybind"_spr);
+
+		// setup mobile ui, can be disabled on android only
+
+		if (Mod::get()->getSettingValue<bool>("disable-button")) {
+			if (auto pauseMenu = this->getChildByIDRecursive("pause-button-menu")) {
+				auto btnSpr = CCSprite::create("activate_totem.png"_spr);
+				btnSpr->setOpacity(75);
+				//auto btn = CCMenuItemSpriteExtra::create(btnSpr, this, CCMenuItemExt::LambdaCallback::create([=]() {
+
+				//}));
+
+				auto btn = CCMenuItemExt::createSpriteExtra(btnSpr, [=](CCObject* sender) {
+					InvokeBindEvent("totem-keybind"_spr, true).post();
+				});
+				btn->setID("button-totem"_spr);
+
+				auto layout = RowLayout::create()
+					->setAxis(Axis::Row)
+					->setCrossAxisAlignment(AxisAlignment::Center);
+
+				
+				pauseMenu->setLayout(layout, true, true);
+
+				pauseMenu->addChild(btn);
+
+				pauseMenu->setPositionX(pauseMenu->getPositionX() - 15);
+				pauseMenu->updateLayout();
+			}
+		}
 		return true;
 	}
 	void destroyPlayer(PlayerObject* p0, GameObject* p1) {
@@ -57,6 +84,5 @@ struct Fields {
 		if (!m_fields->m_shouldNoclip) {
 			PlayLayer::destroyPlayer(p0, p1);
 		}
-		
 	}
 };

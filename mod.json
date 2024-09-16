@@ -15,6 +15,9 @@
 		"joke"
 	],
 	"resources": {
+		"sprites": [
+			"resources/*.png"
+		],
 		"spritesheets": {
 			"totemframes": [
 				"resources/totem_animframes/*.png"
@@ -30,5 +33,13 @@
 			"importance": "required",
 			"version": ">=1.9.0"
 		}
-	]
+	],
+	"settings": {
+		"disable-button": {
+			"name": "Disable Totem button",
+			"description": "Disables the Totem button next to the Pause button while, doesn't show when you have \"show cursor\" option enables regardless of this setting, this is mainly for mobile.",
+			"type": "bool",
+			"default": true
+		}
+	}
 }
