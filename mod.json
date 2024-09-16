@@ -1,5 +1,5 @@
 {
-	"geode": "3.6.1",
+	"geode": "3.7.1",
 	"gd": {
 		"win": "2.206",
 		"android": "2.206",
@@ -17,7 +17,7 @@
 	"resources": {
 		"spritesheets": {
 			"totemframes": [
-				"resources/*.png"
+				"resources/totem_animframes/*.png"
 			]
 		}
 	},
