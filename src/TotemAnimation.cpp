@@ -9,7 +9,12 @@ bool TotemAnimation::init(std::function<void()> onceFinished, bool shouldCleanup
     onFinished = onceFinished;
     m_shouldCleanup = shouldCleanup;
 
+    
     this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
+
+    auto fmod = FMODAudioEngine::sharedEngine();
+    fmod->playEffect("totemfx.mp3"_spr);
+
     
     return true;
 }

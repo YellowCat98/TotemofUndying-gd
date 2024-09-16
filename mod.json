@@ -19,7 +19,10 @@
 			"totemframes": [
 				"resources/totem_animframes/*.png"
 			]
-		}
+		},
+		"files": [
+			"resources/*.mp3"
+		]
 	},
 	"dependencies": [
 		{

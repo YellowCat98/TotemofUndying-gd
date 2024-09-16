@@ -34,7 +34,9 @@ struct Fields {
 				m_fields->m_shouldNoclip = true;
 				auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-				auto totem = TotemAnimation::create([&]() {
+				auto totem = TotemAnimation::create([=]() {
+					//auto fmod = FMODAudioEngine::sharedEngine();
+					//fmod->playEffect("totemfx.mp3"_spr);
 					m_fields->m_shouldNoclip = false;
 				}, true);
 
