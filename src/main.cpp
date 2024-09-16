@@ -5,6 +5,7 @@
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include "TotemAnimation.hpp"
+#include <Geode/modify/GameStatsManager.hpp>
 
 using namespace geode::prelude;
 using namespace keybinds;
