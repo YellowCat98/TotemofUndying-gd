@@ -10,21 +10,6 @@
 using namespace geode::prelude;
 using namespace keybinds;
 
-class $modify(MenuLayer) {
-	bool init() {
-		if (!MenuLayer::init()) return false;
-		auto winSize = CCDirector::sharedDirector()->getWinSize();
-		auto sprite = TotemAnimation::create([=]() {
-			log::info("Animation is done!");
-		});
-
-		sprite->setPosition({winSize.width / 2, winSize.height / 2});
-
-		this->addChild(sprite);
-		return true;
-	}
-};
-
 $execute {
 	BindManager::get()->registerBindable({
 		"totem-keybind"_spr,
@@ -52,7 +37,7 @@ struct Fields {
 
 				auto totem = TotemAnimation::create([&]() {
 					m_fields->m_shouldNoclip = false;
-				});
+				}, true);
 
 				totem->setPosition({winSize.width / 2, winSize.height / 2});
 
@@ -73,27 +58,3 @@ struct Fields {
 		
 	}
 };
-/*
-class $modify(GJBaseGameLayerHook, GJBaseGameLayer) {
-	void resetPlayer() {
-		GJBaseGameLayer::resetPlayer();
-		if (auto playLayer = PlayLayer::get()) {
-			static_cast<PlayLayerHook*>(playLayer)->m_fields->m_isDead = false;
-		}
-	}
-};
-
-class $modify(PlayerObjectHook, PlayerObject) {
-	void pushButton(PlayerButton p0) {
-		log::info("is this beiong called whendead");
-
-		if (auto playLayer = PlayLayer::get()) {
-			if (static_cast<PlayLayerHook*>(playLayer)->m_fields->m_isDead) {
-				auto sprite = CCSprite::create("totem.png"_spr);
-				this->addChild(sprite);
-			}
-		}
-		PlayerObject::pushButton(p0);
-	}
-};
-*/

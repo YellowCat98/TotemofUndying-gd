@@ -2,10 +2,12 @@
 
 using namespace geode::prelude;
 
-bool TotemAnimation::init(std::function<void()> onceFinished) {
-    if (!CCSprite::initWithSpriteFrameName("mctotem_anim_01.png"_spr)) return false;
+bool TotemAnimation::init(std::function<void()> onceFinished, bool shouldCleanup) {
+    if (!CCSprite::init()) return false;
+    this->setScale(2.850f); // set scale cause 1 looks small
 
     onFinished = onceFinished;
+    m_shouldCleanup = shouldCleanup;
 
     this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
     
@@ -20,11 +22,14 @@ void TotemAnimation::FreeTheMemoryOfTheTotemAnimationClassWhichWouldComeInHandyI
 }
 
 void TotemAnimation::startAnimation(float dt) {
-    static int frame = 3;
+    static int frame = 1;
     if (frame == 67) {
-        frame = 3;
+        frame = 1;
         onFinished();
-        TotemAnimation::FreeTheMemoryOfTheTotemAnimationClassWhichWouldComeInHandyInCertainCasesLikeWhenTheAnimationIsFinishedAndActuallyItsOnlyPurposeIsToGetFreedWhenTheAnimationIsDoneWhichIsPrettyCool();
+        if (m_shouldCleanup) {
+            TotemAnimation::FreeTheMemoryOfTheTotemAnimationClassWhichWouldComeInHandyInCertainCasesLikeWhenTheAnimationIsFinishedAndActuallyItsOnlyPurposeIsToGetFreedWhenTheAnimationIsDoneWhichIsPrettyCool();
+        }
+        
     }
 
     auto spriteName = fmt::format("mctotem_anim_{}.png"_spr, frame);
@@ -40,9 +45,9 @@ void TotemAnimation::startAnimation(float dt) {
     
 }
 
-TotemAnimation* TotemAnimation::create(std::function<void()> onceFinished) {
+TotemAnimation* TotemAnimation::create(std::function<void()> onceFinished, bool shouldCleanup) {
     auto ret = new TotemAnimation();
-    if (ret->init(onceFinished)) {
+    if (ret->init(onceFinished, shouldCleanup)) {
         ret->autorelease();
         return ret;
     }
