@@ -1,11 +1,11 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PlayLayer.hpp>
-#include <Geode/modify/PlayerObject.hpp>
-#include <Geode/modify/GJBaseGameLayer.hpp>
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include "TotemAnimation.hpp"
 #include <Geode/modify/GameStatsManager.hpp>
+#include <Geode/modify/EndLevelLayer.hpp>
+#include <Geode/modify/GJBaseGameLayer.hpp>
 
 using namespace geode::prelude;
 using namespace keybinds;
@@ -24,19 +24,27 @@ $execute {
 }
 
 class $modify(GameStatsManagerHook, GameStatsManager) {
+struct Fields {
+	bool m_shouldShowAnimation;
+	int m_starsToShow;
+};
 	void incrementStat(const char* p0, int p1) {
 		GameStatsManager::incrementStat(p0, p1);
 		if (strcmp(p0, "6") == 0) { // why.
+			m_fields->m_shouldShowAnimation = true;
+			m_fields->m_starsToShow = p1;
 			if (int totemCount = Mod::get()->getSavedValue<int64_t>("totem-count")) {
 				Mod::get()->setSavedValue<int64_t>("totem-count", p1 + totemCount);
 			} else {
 				Mod::get()->setSavedValue<int64_t>("totem-count", p1);
 			}
+		} else {
+			m_fields->m_shouldShowAnimation = false;
 		}
-
-		
 	}
 };
+
+
 
 bool hasSufficientTotems() {
 	return Mod::get()->getSavedValue<int64_t>("totem-count") > 0;
@@ -46,6 +54,7 @@ class $modify(PlayLayerHook, PlayLayer) {
 struct Fields {
 	bool m_shouldNoclip;
 	//CCParticleSystemQuad* particles;
+	bool m_shouldShowIndicator;
 };
 
 	bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
@@ -55,7 +64,7 @@ struct Fields {
 				if (hasSufficientTotems()) {
 					Mod::get()->setSavedValue<int64_t>("totem-count", Mod::get()->getSavedValue<int64_t>("totem-count") - 1);
 					m_fields->m_shouldNoclip = true;
-
+					m_fields->m_shouldShowIndicator = true;
 
 					auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -119,6 +128,27 @@ struct Fields {
 			//m_fields->particles = CCParticleSystemQuad::create("particle_effect.plist"_spr, false);
 			//particles->setID("particles");
 			//p0->addChild(m_fields->particles);
+		}
+	}
+	void resetLevel() {
+		PlayLayer::resetLevel();
+		m_fields->m_shouldShowIndicator = false;
+	}
+};
+
+class $modify(EndLevelLayerHook, EndLevelLayer) {
+	void playStarEffect(float p0) {
+		EndLevelLayer::playStarEffect(p0);
+
+		if (static_cast<PlayLayerHook*>(m_playLayer)->m_fields->m_shouldShowIndicator) {
+			auto spr = CCSprite::create("totem.png"_spr);
+			spr->setOpacity(0);
+
+			this->addChild(spr);
+
+			auto fadeIn = CCFadeIn::create(1.0f);
+
+			spr->runAction(fadeIn);
 		}
 	}
 };
