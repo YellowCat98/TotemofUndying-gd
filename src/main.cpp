@@ -137,12 +137,16 @@ struct Fields {
 };
 
 class $modify(EndLevelLayerHook, EndLevelLayer) {
-	void playStarEffect(float p0) {
-		EndLevelLayer::playStarEffect(p0);
+	void customSetup() {
+		auto winSize = CCDirector::sharedDirector()->getWinSize();
+		EndLevelLayer::customSetup();
 
 		if (static_cast<PlayLayerHook*>(m_playLayer)->m_fields->m_shouldShowIndicator) {
 			auto spr = CCSprite::create("totem.png"_spr);
 			spr->setOpacity(0);
+
+			auto sprSize = spr->getContentSize();
+			spr->setPosition({sprSize.width / 2, winSize.height - sprSize.height / 2});
 
 			this->addChild(spr);
 
