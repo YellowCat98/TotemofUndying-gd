@@ -23,26 +23,58 @@ $execute {
 	});
 }
 
+class $modify(GameStatsManagerHook, GameStatsManager) {
+	void incrementStat(const char* p0, int p1) {
+		GameStatsManager::incrementStat(p0, p1);
+		if (strcmp(p0, "6") == 0) { // why.
+			if (int totemCount = Mod::get()->getSavedValue<int64_t>("totem-count")) {
+				Mod::get()->setSavedValue<int64_t>("totem-count", p1 + totemCount);
+			} else {
+				Mod::get()->setSavedValue<int64_t>("totem-count", p1);
+			}
+		}
+
+		
+	}
+};
+
+bool hasSufficientTotems() {
+	return Mod::get()->getSavedValue<int64_t>("totem-count") > 0;
+}
+
 class $modify(PlayLayerHook, PlayLayer) {
 struct Fields {
 	bool m_shouldNoclip;
+	//CCParticleSystemQuad* particles;
 };
 
 	bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
 		if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
-				m_fields->m_shouldNoclip = true;
-				auto winSize = CCDirector::sharedDirector()->getWinSize();
+				if (hasSufficientTotems()) {
+					Mod::get()->setSavedValue<int64_t>("totem-count", Mod::get()->getSavedValue<int64_t>("totem-count") - 1);
+					m_fields->m_shouldNoclip = true;
 
-				auto totem = TotemAnimation::create([=]() {
+
+					auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+					auto totem = TotemAnimation::create([=]() {
+						m_fields->m_shouldNoclip = false;
+
+						//if (m_fields->particles) {
+						//	m_fields->particles->stopSystem();
+
+						//	m_fields->particles->removeFromParent();
+						//}
+					}, true);
+
+					totem->setPosition({winSize.width / 2, winSize.height / 2});
+
+					this->addChild(totem);
+				} else {
 					m_fields->m_shouldNoclip = false;
-				}, true);
-
-				totem->setPosition({winSize.width / 2, winSize.height / 2});
-
-				this->addChild(totem);
-
+				}
 			}
 			
 			return ListenerResult::Propagate;
@@ -83,6 +115,10 @@ struct Fields {
 
 		if (!m_fields->m_shouldNoclip) {
 			PlayLayer::destroyPlayer(p0, p1);
+		} else {
+			//m_fields->particles = CCParticleSystemQuad::create("particle_effect.plist"_spr, false);
+			//particles->setID("particles");
+			//p0->addChild(m_fields->particles);
 		}
 	}
 };
