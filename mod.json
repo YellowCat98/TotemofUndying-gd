@@ -39,8 +39,7 @@
 			"name": "Show Totem button",
 			"description": "Disables the Totem button next to the Pause button while, doesn't show when you have \"show cursor\" option enables regardless of this setting, this is mainly for mobile.",
 			"type": "bool",
-			"default": false,
-			"platforms": ["win", "macos"]
+			"default": false
 		}
 	}
 }

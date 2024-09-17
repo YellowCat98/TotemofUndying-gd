@@ -83,9 +83,7 @@ struct Fields {
 			return ListenerResult::Propagate;
 		}, "totem-keybind"_spr);
 
-		// setup mobile ui, can be disabled on android only
-
-		if (!Mod::get()->getSettingValue<bool>("show-button")) {
+		if (Mod::get()->getSettingValue<bool>("show-button")) {
 			if (auto pauseMenu = this->getChildByIDRecursive("pause-button-menu")) {
 				auto btnSpr = CCSprite::create("activate_totem.png"_spr);
 				btnSpr->setOpacity(75);
