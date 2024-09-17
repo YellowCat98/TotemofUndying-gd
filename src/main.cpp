@@ -25,26 +25,20 @@ $execute {
 
 class $modify(GameStatsManagerHook, GameStatsManager) {
 struct Fields {
-	bool m_shouldShowAnimation;
 	int m_starsToShow;
 };
 	void incrementStat(const char* p0, int p1) {
 		GameStatsManager::incrementStat(p0, p1);
 		if (strcmp(p0, "6") == 0) { // why.
-			m_fields->m_shouldShowAnimation = true;
 			m_fields->m_starsToShow = p1;
 			if (int totemCount = Mod::get()->getSavedValue<int64_t>("totem-count")) {
 				Mod::get()->setSavedValue<int64_t>("totem-count", p1 + totemCount);
 			} else {
 				Mod::get()->setSavedValue<int64_t>("totem-count", p1);
 			}
-		} else {
-			m_fields->m_shouldShowAnimation = false;
 		}
 	}
 };
-
-
 
 bool hasSufficientTotems() {
 	return Mod::get()->getSavedValue<int64_t>("totem-count") > 0;
@@ -91,7 +85,7 @@ struct Fields {
 
 		// setup mobile ui, can be disabled on android only
 
-		if (Mod::get()->getSettingValue<bool>("disable-button")) {
+		if (!Mod::get()->getSettingValue<bool>("show-button")) {
 			if (auto pauseMenu = this->getChildByIDRecursive("pause-button-menu")) {
 				auto btnSpr = CCSprite::create("activate_totem.png"_spr);
 				btnSpr->setOpacity(75);
@@ -147,12 +141,30 @@ class $modify(EndLevelLayerHook, EndLevelLayer) {
 
 			auto sprSize = spr->getContentSize();
 			spr->setPosition({sprSize.width / 2, winSize.height - sprSize.height / 2});
+			spr->setID("totem-indicator"_spr);
 
 			this->addChild(spr);
 
 			auto fadeIn = CCFadeIn::create(1.0f);
 
 			spr->runAction(fadeIn);
+		}
+		auto gsm = static_cast<GameStatsManagerHook*>(GameStatsManager::sharedState());
+		
+		if (gsm->m_fields->m_starsToShow > 0) {
+			auto label = CCLabelBMFont::create(fmt::format("+{}", gsm->m_fields->m_starsToShow).c_str(), "bigFont.fnt");
+			label->setPosition({140.0f, 175.0f});
+			label->setScale(0.850f);
+			label->setID("totem-earned-label"_spr);
+			
+
+			auto totem = CCSprite::create("totem.png"_spr);
+
+			totem->setPosition({label->getPositionX() + 40, label->getPositionY()});
+			totem->setID("totem"_spr);
+
+			m_mainLayer->addChild(totem);
+			m_mainLayer->addChild(label);
 		}
 	}
 };
