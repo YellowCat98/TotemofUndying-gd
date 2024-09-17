@@ -41,5 +41,8 @@
 			"type": "bool",
 			"default": false
 		}
+	},
+	"links": {
+		"source": "https://github.com/YellowCat98/TotemofUndying-gd"
 	}
 }
