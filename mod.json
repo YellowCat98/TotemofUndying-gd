@@ -37,7 +37,7 @@
 	"settings": {
 		"show-button": {
 			"name": "Show Totem button",
-			"description": "Disables the Totem button next to the Pause button while, doesn't show when you have \"show cursor\" option enables regardless of this setting, this is mainly for mobile.",
+			"description": "Shows a Totem button next to the pause button while playing to trigger the totem of undying, This cannot be disabled on mobile.",
 			"type": "bool",
 			"default": false
 		}

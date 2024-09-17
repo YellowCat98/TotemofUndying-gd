@@ -21,6 +21,14 @@ $execute {
 
 		Mod::get()->getName()
 	});
+
+	#ifdef GEODE_IS_MOBILE
+	listenForSettingChanges("show-button", +[](bool value) {
+		if (!value) {
+			Mod::get()->setSettingValue<bool>("show-button", true);
+		}
+	});
+	#endif
 }
 
 class $modify(GameStatsManagerHook, GameStatsManager) {
