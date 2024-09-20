@@ -7,4 +7,4 @@ This stat increases whenever your star count increases, for example, beating a 1
 # CREDITS:
 Saritah: Mod idea and making the frame-by-frame totem of undying animation
 
-- If you want to contribute, you can by opening a (pull request)[https://github.com/YellowCat98/TotemofUndying-gd/pulls]
+- If you want to contribute, you can by opening a [pull request](https://github.com/YellowCat98/TotemofUndying-gd/pulls)

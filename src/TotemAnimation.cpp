@@ -3,14 +3,12 @@
 using namespace geode::prelude;
 
 bool TotemAnimation::init(std::function<void()> onceFinished, bool shouldCleanup) {
-	if (!CCSprite::init()) return false;
+	if (!CCSprite::initWithFile("empty_spr.png"_spr)) return false;
+	this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
 	this->setScale(2.850f); // set scale cause 1 looks small
 
 	onFinished = onceFinished;
 	m_shouldCleanup = shouldCleanup;
-
-	
-	this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
 
 	auto fmod = FMODAudioEngine::sharedEngine();
 	fmod->playEffect("totemfx.mp3"_spr);
