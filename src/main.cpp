@@ -70,23 +70,33 @@ struct Fields {
 					m_fields->m_shouldNoclip = true;
 					m_fields->m_shouldShowIndicator = true;
 					m_fields->m_canActivateTotem = false;
+					auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+					auto timeElapsedLabel = CCLabelBMFont::create("", "bigFont.fnt");
+					timeElapsedLabel->setPosition(ccp(winSize.width - timeElapsedLabel->getContentSize().width / 2, timeElapsedLabel->getContentSize().height / 2));
+					timeElapsedLabel->setAnchorPoint(ccp(1.0f, 0.0f));
+					timeElapsedLabel->setScale(0.5f);
+					this->addChild(timeElapsedLabel);
+
 
 					// start the timer
-					auto delay = CoolerDelayTime::create(10.0f);
-					delay->whileTimerIsRunning = [=]() {
-						log::info("{}", delay->timeRemaining());
+					auto delay = CoolerDelayTime::create(2.0f);
+					delay->whileTimerIsRunning = [=](float dt) {
+						timeElapsedLabel->setString(fmt::format("{}s", std::round(delay->timeRemaining() * 100.0f) / 100.0f).c_str());
 					};
 
 					auto callback = LambdaCallback::create([=]() {
 						m_fields->m_canActivateTotem = true;
+						timeElapsedLabel->setString("");
 					});
 
 					auto sequence = CCSequence::create(delay, callback, nullptr);
 
 					this->runAction(sequence);
+					
 
 					
-					auto winSize = CCDirector::sharedDirector()->getWinSize();
+					
 
 					auto totem = TotemAnimation::create([=]() {
 						m_fields->m_shouldNoclip = false;

@@ -30,33 +30,29 @@ public:
     }
 };
 
-class CoolerDelayTime : public cocos2d::CCDelayTime {
+class CoolerDelayTime : public cocos2d::CCActionInterval {
 private:
     float m_timeRemaining;
 public:
-    std::function<void()> whileTimerIsRunning;
+    std::function<void(float)> whileTimerIsRunning;
     static CoolerDelayTime* create(float duration) {
         CoolerDelayTime* ret = new CoolerDelayTime();
         if (ret->initWithDuration(duration)) {
             ret->autorelease();
-            ret->m_timeRemaining = duration;
             return ret;
         }
         CC_SAFE_DELETE(ret);
         return nullptr;
     }
-
     virtual void update(float dt) override {
-        CCDelayTime::update(dt);
-        m_timeRemaining -= dt;
-        if (m_timeRemaining > 0.0f) {
+        // Call the base class update
+        CCActionInterval::update(dt);
 
-            if (whileTimerIsRunning) {
-                whileTimerIsRunning();
-            }
-        } else {
-            m_timeRemaining = 0;
-        }
+        m_timeRemaining = dt * m_fDuration;
+
+        m_timeRemaining = m_fDuration - m_timeRemaining;
+
+        whileTimerIsRunning(dt);
     }
 
 
