@@ -38,12 +38,11 @@ void TotemAnimation::startAnimation(float dt) {
 
 	auto spriteName = fmt::format("mctotem_anim_{}.png"_spr, frame);
 
-	auto sprite = CCSprite::createWithSpriteFrameName(spriteName.c_str());
-	if (sprite) {
-		auto sprframe = CCSpriteFrameCache::get()->spriteFrameByName(spriteName.c_str());
-
+	auto sprframe = CCSpriteFrameCache::get()->spriteFrameByName(spriteName.c_str());
+	if (sprframe) {
 		this->setDisplayFrame(sprframe);
 	}
+	
 
 	++frame;
 	
