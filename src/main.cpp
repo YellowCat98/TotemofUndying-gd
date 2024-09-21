@@ -57,17 +57,23 @@ struct Fields {
 	bool m_shouldNoclip;
 	//CCParticleSystemQuad* particles;
 	bool m_shouldShowIndicator;
+	bool m_canActivateTotem;
 };
 
 	bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
 		if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
-				if (hasSufficientTotems()) {
+				if (hasSufficientTotems() && m_fields->m_canActivateTotem) {
 					Mod::get()->setSavedValue<int64_t>("totem-count", Mod::get()->getSavedValue<int64_t>("totem-count") - 1);
 					m_fields->m_shouldNoclip = true;
 					m_fields->m_shouldShowIndicator = true;
+					m_fields->m_canActivateTotem = false;
 
+					// start the timer
+					
+
+					
 					auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 					auto totem = TotemAnimation::create([=]() {
@@ -85,6 +91,7 @@ struct Fields {
 					this->addChild(totem);
 				} else {
 					m_fields->m_shouldNoclip = false;
+					GJBaseGameLayer::get()->shakeCamera(0.2f, 5.0f, 0.0f);
 				}
 			}
 			
