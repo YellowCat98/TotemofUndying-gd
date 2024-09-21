@@ -3,6 +3,7 @@
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include "TotemAnimation.hpp"
+#include "LambdaCallback.hpp"
 #include <Geode/modify/GameStatsManager.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -64,14 +65,14 @@ struct Fields {
 		if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
-				if (hasSufficientTotems() && m_fields->m_canActivateTotem) {
+				if (hasSufficientTotems() || m_fields->m_canActivateTotem) {
 					Mod::get()->setSavedValue<int64_t>("totem-count", Mod::get()->getSavedValue<int64_t>("totem-count") - 1);
 					m_fields->m_shouldNoclip = true;
 					m_fields->m_shouldShowIndicator = true;
 					m_fields->m_canActivateTotem = false;
 
 					// start the timer
-					
+					auto delay = CCDelayTime::create(2.0f);
 
 					
 					auto winSize = CCDirector::sharedDirector()->getWinSize();

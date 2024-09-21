@@ -10,6 +10,7 @@ add_library(${PROJECT_NAME} SHARED
     src/main.cpp
     src/TotemAnimation.hpp
     src/TotemAnimation.cpp
+    src/LambdaCallback.hpp
 
 )
 if (NOT DEFINED ENV{GEODE_SDK})
