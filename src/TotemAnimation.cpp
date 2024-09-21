@@ -6,6 +6,7 @@ bool TotemAnimation::init(std::function<void()> onceFinished, bool shouldCleanup
 	if (!CCSprite::initWithFile("empty_spr.png"_spr)) return false;
 	this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
 	this->setScale(2.850f); // set scale cause 1 looks small
+	this->setID("totem-animation"_spr);
 
 	onFinished = onceFinished;
 	m_shouldCleanup = shouldCleanup;
