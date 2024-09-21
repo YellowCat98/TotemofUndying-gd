@@ -3,7 +3,7 @@
 using namespace geode::prelude;
 
 bool TotemAnimation::init(std::function<void()> onceFinished, bool shouldCleanup) {
-	if (!CCSprite::initWithFile("empty_spr.png"_spr)) return false;
+	if (!CCSprite::init()) return false;
 	this->schedule(schedule_selector(TotemAnimation::startAnimation), (0.3f/12.0f));
 	this->setScale(2.850f); // set scale cause 1 looks small
 	this->setID("totem-animation"_spr);
@@ -36,7 +36,7 @@ void TotemAnimation::startAnimation(float dt) {
 		
 	}
 
-	auto spriteName = fmt::format("mctotem_anim_{}.png"_spr, frame);
+	auto spriteName = fmt::format("mctotem_anim_{:02d}.png"_spr, frame);
 
 	auto sprframe = CCSpriteFrameCache::get()->spriteFrameByName(spriteName.c_str());
 	if (sprframe) {
