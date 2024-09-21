@@ -3,7 +3,7 @@
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include "TotemAnimation.hpp"
-#include "LambdaCallback.hpp"
+#include "utils.hpp"
 #include <Geode/modify/GameStatsManager.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -58,7 +58,7 @@ struct Fields {
 	bool m_shouldNoclip;
 	//CCParticleSystemQuad* particles;
 	bool m_shouldShowIndicator;
-	bool m_canActivateTotem;
+	bool m_canActivateTotem = true; // always assume player can activate totem when layer is entered
 };
 
 	bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
@@ -72,7 +72,18 @@ struct Fields {
 					m_fields->m_canActivateTotem = false;
 
 					// start the timer
-					auto delay = CCDelayTime::create(2.0f);
+					auto delay = CoolerDelayTime::create(10.0f);
+					delay->whileTimerIsRunning = [=]() {
+						log::info("{}", delay->timeRemaining());
+					};
+
+					auto callback = LambdaCallback::create([=]() {
+						m_fields->m_canActivateTotem = true;
+					});
+
+					auto sequence = CCSequence::create(delay, callback, nullptr);
+
+					this->runAction(sequence);
 
 					
 					auto winSize = CCDirector::sharedDirector()->getWinSize();
@@ -91,11 +102,10 @@ struct Fields {
 
 					this->addChild(totem);
 				} else {
-					m_fields->m_shouldNoclip = false;
 					GJBaseGameLayer::get()->shakeCamera(0.2f, 5.0f, 0.0f);
 				}
 			}
-			
+
 			return ListenerResult::Propagate;
 		}, "totem-keybind"_spr);
 

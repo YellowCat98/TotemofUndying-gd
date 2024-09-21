@@ -45,13 +45,6 @@
 			"description": "Shows a Totem button next to the pause button while playing to trigger the totem of undying, This cannot be disabled on mobile.",
 			"type": "bool",
 			"default": false
-		},
-		"cooldown": {
-			"name": "Totem Cooldown",
-			"description": "Set the cooldown for defining how long the totem of undying effect is.",
-			"type": "float",
-			"default": 5.0,
-			"min": 2.0
 		}
 	},
 	"links": {
