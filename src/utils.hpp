@@ -33,11 +33,18 @@ public:
 class CoolerDelayTime : public cocos2d::CCActionInterval {
 private:
     float m_timeRemaining;
+
+    bool initWithDuration(float duration, std::function<void()> onInit) {
+        if (!CCActionInterval::initWithDuration(duration)) return false;
+        onInit();
+        return true;
+    }
+
 public:
-    std::function<void(float)> whileTimerIsRunning;
-    static CoolerDelayTime* create(float duration) {
+    std::function<void(float, float)> whileTimerIsRunning;
+    static CoolerDelayTime* create(float duration, std::function<void()> onInit) {
         CoolerDelayTime* ret = new CoolerDelayTime();
-        if (ret->initWithDuration(duration)) {
+        if (ret->initWithDuration(duration, onInit)) {
             ret->autorelease();
             return ret;
         }
@@ -52,7 +59,7 @@ public:
 
         m_timeRemaining = m_fDuration - m_timeRemaining;
 
-        whileTimerIsRunning(dt);
+        whileTimerIsRunning(dt, m_timeRemaining);
     }
 
 
@@ -60,3 +67,7 @@ public:
         return m_timeRemaining;
     }
 };
+
+float limitDecimal(float value) {
+    return std::round(value * 100.0f) / 100.0f;
+}

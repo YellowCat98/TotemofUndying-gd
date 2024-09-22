@@ -59,10 +59,21 @@ struct Fields {
 	//CCParticleSystemQuad* particles;
 	bool m_shouldShowIndicator;
 	bool m_canActivateTotem = true; // always assume player can activate totem when layer is entered
+	CCLabelBMFont* m_timeRemaining;
+	bool m_shouldMoveLabel;
 };
 
 	bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
 		if (!PlayLayer::init(level, useReplay, dontCreateObjects)) return false;
+		auto winSize = CCDirector::sharedDirector()->getWinSize();
+
+		m_fields->m_timeRemaining = CCLabelBMFont::create("", "bigFont.fnt");
+		m_fields->m_timeRemaining->setPosition(ccp(winSize.width - m_fields->m_timeRemaining->getContentSize().width / 2, m_fields->m_timeRemaining->getContentSize().height / 2));
+		m_fields->m_timeRemaining->setAnchorPoint(ccp(1.0f, 0.0f));
+		m_fields->m_timeRemaining->setScale(0.5f);
+		m_fields->m_timeRemaining->setID("time-remaining"_spr);
+		this->addChild(m_fields->m_timeRemaining);
+
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
 				if (hasSufficientTotems() || m_fields->m_canActivateTotem) {
@@ -70,33 +81,39 @@ struct Fields {
 					m_fields->m_shouldNoclip = true;
 					m_fields->m_shouldShowIndicator = true;
 					m_fields->m_canActivateTotem = false;
-					auto winSize = CCDirector::sharedDirector()->getWinSize();
-
-					auto timeElapsedLabel = CCLabelBMFont::create("", "bigFont.fnt");
-					timeElapsedLabel->setPosition(ccp(winSize.width - timeElapsedLabel->getContentSize().width / 2, timeElapsedLabel->getContentSize().height / 2));
-					timeElapsedLabel->setAnchorPoint(ccp(1.0f, 0.0f));
-					timeElapsedLabel->setScale(0.5f);
-					this->addChild(timeElapsedLabel);
-
-
+					
 					// start the timer
-					auto delay = CoolerDelayTime::create(2.0f);
-					delay->whileTimerIsRunning = [=](float dt) {
-						timeElapsedLabel->setString(fmt::format("{}s", std::round(delay->timeRemaining() * 100.0f) / 100.0f).c_str());
+					auto delay = CoolerDelayTime::create(2.0f, [=]() {
+						if (m_fields->m_shouldMoveLabel) {
+							auto moveBy = CCMoveBy::create(0.1f, ccp(0, 15.0f));
+
+							m_fields->m_timeRemaining->runAction(CCEaseSineIn::create(moveBy));
+							m_fields->m_timeRemaining->setColor(ccc3(255, 255, 255));
+						}
+					});
+					delay->whileTimerIsRunning = [=](float dt, float time) {
+						m_fields->m_timeRemaining->setString(fmt::format("{}s", limitDecimal(time)).c_str());
+
+						if (limitDecimal(time) == 0.5f) {
+							log::info("time: {}", limitDecimal(time));
+							m_fields->m_timeRemaining->runAction(CCTintTo::create(0.5f, 156, 255, 161));
+						}
 					};
 
 					auto callback = LambdaCallback::create([=]() {
 						m_fields->m_canActivateTotem = true;
-						timeElapsedLabel->setString("");
+						
+						auto moveBy = CCMoveBy::create(0.1f, ccp(0.0f, -15.0f));
+
+						auto elasticIn = CCEaseSineIn::create(moveBy);
+
+						m_fields->m_timeRemaining->runAction(elasticIn);
+						m_fields->m_shouldMoveLabel = true;
 					});
 
 					auto sequence = CCSequence::create(delay, callback, nullptr);
 
 					this->runAction(sequence);
-					
-
-					
-					
 
 					auto totem = TotemAnimation::create([=]() {
 						m_fields->m_shouldNoclip = false;
