@@ -7,6 +7,8 @@
 #include <Geode/modify/GameStatsManager.hpp>
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
+#include <Geode/modify/GJGarageLayer.hpp>
+#include <capeling.garage-stats-menu/include/StatsDisplayAPI.h>
 
 using namespace geode::prelude;
 using namespace keybinds;
@@ -31,6 +33,21 @@ $execute {
 	});
 	#endif
 }
+
+class $modify(GJGarageLayerHook, GJGarageLayer) {
+	bool init() {
+		if (!GJGarageLayer::init()) return false;
+		auto statMenu = this->getChildByID("capeling.garage-stats-menu/stats-menu");
+
+		auto totemItem = StatsDisplayAPI::getNewItem("totem-count"_spr, CCSprite::create("totem.png"_spr), Mod::get()->getSavedValue<int64_t>("totem-count"));
+
+		if (statMenu) {
+			statMenu->addChild(totemItem);
+			statMenu->updateLayout();
+		}
+		return true;
+	}
+};
 
 class $modify(GameStatsManagerHook, GameStatsManager) {
 struct Fields {
@@ -76,7 +93,7 @@ struct Fields {
 
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
-				if (hasSufficientTotems() || m_fields->m_canActivateTotem) {
+				if (hasSufficientTotems() && m_fields->m_canActivateTotem) {
 					Mod::get()->setSavedValue<int64_t>("totem-count", Mod::get()->getSavedValue<int64_t>("totem-count") - 1);
 					m_fields->m_shouldNoclip = true;
 					m_fields->m_shouldShowIndicator = true;

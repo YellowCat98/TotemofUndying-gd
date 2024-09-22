@@ -37,6 +37,11 @@
 			"id": "geode.node-ids",
 			"importance": "required",
 			"version": ">=1.14.0"
+		},
+		{
+			"id": "capeling.garage-stats-menu",
+			"importance": "required",
+			"version": ">=1.0.1"
 		}
 	],
 	"settings": {
