@@ -12,7 +12,8 @@
 	"developer": "YellowCat98",
 	"description": "",
 	"tags": [
-		"joke"
+		"joke",
+		"cheats"
 	],
 	"resources": {
 		"sprites": [
@@ -24,7 +25,8 @@
 			]
 		},
 		"files": [
-			"resources/*.mp3"
+			"resources/*.mp3",
+			"resources/*.plist"
 		]
 	},
 	"dependencies": [

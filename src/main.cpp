@@ -73,7 +73,7 @@ bool hasSufficientTotems() {
 class $modify(PlayLayerHook, PlayLayer) {
 struct Fields {
 	bool m_shouldNoclip;
-	//CCParticleSystemQuad* particles;
+	CCParticleSystemQuad* particles;
 	bool m_shouldShowIndicator;
 	bool m_canActivateTotem = true; // always assume player can activate totem when layer is entered
 	CCLabelBMFont* m_timeRemaining;
@@ -91,6 +91,11 @@ struct Fields {
 		m_fields->m_timeRemaining->setID("time-remaining"_spr);
 		this->addChild(m_fields->m_timeRemaining);
 
+		m_fields->particles = CCParticleSystemQuad::create("particle_effect.plist"_spr, false);
+		m_fields->particles->setID("particles"_spr);
+		this->addChild(m_fields->particles);
+		m_fields->particles->stopSystem();
+
 		this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
 			if (event->isDown()) {
 				if (hasSufficientTotems() && m_fields->m_canActivateTotem) {
@@ -101,6 +106,9 @@ struct Fields {
 					
 					// start the timer
 					auto delay = CoolerDelayTime::create(2.0f, [=]() {
+
+						m_fields->particles->resetSystem();
+
 						if (m_fields->m_shouldMoveLabel) {
 							auto moveBy = CCMoveBy::create(0.1f, ccp(0, 15.0f));
 
@@ -113,7 +121,7 @@ struct Fields {
 
 						if (limitDecimal(time) == 0.5f) {
 							log::info("time: {}", limitDecimal(time));
-							m_fields->m_timeRemaining->runAction(CCTintTo::create(0.5f, 156, 255, 161));
+							m_fields->m_timeRemaining->runAction(CCTintTo::create(0.5f, 255, 0, 0));
 						}
 					};
 
@@ -135,11 +143,11 @@ struct Fields {
 					auto totem = TotemAnimation::create([=]() {
 						m_fields->m_shouldNoclip = false;
 
-						//if (m_fields->particles) {
-						//	m_fields->particles->stopSystem();
+						if (m_fields->particles) {
+							m_fields->particles->stopSystem();
 
-						//	m_fields->particles->removeFromParent();
-						//}
+							//m_fields->particles->removeFromParent();
+						}
 					}, true);
 
 					totem->setPosition({winSize.width / 2, winSize.height / 2});
@@ -157,9 +165,6 @@ struct Fields {
 			if (auto pauseMenu = this->getChildByIDRecursive("pause-button-menu")) {
 				auto btnSpr = CCSprite::create("activate_totem.png"_spr);
 				btnSpr->setOpacity(75);
-				//auto btn = CCMenuItemSpriteExtra::create(btnSpr, this, CCMenuItemExt::LambdaCallback::create([=]() {
-
-				//}));
 
 				auto btn = CCMenuItemExt::createSpriteExtra(btnSpr, [=](CCObject* sender) {
 					InvokeBindEvent("totem-keybind"_spr, true).post();
@@ -186,10 +191,6 @@ struct Fields {
 
 		if (!m_fields->m_shouldNoclip) {
 			PlayLayer::destroyPlayer(p0, p1);
-		} else {
-			//m_fields->particles = CCParticleSystemQuad::create("particle_effect.plist"_spr, false);
-			//particles->setID("particles");
-			//p0->addChild(m_fields->particles);
 		}
 	}
 	void resetLevel() {
