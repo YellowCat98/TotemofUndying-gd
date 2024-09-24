@@ -1,3 +1,8 @@
+# 1.1.1
+- Add particles
+- Make it so that the timer is tinted red instead of green
+- Fix tiny delay in the sfx
+
 # 1.1.0
 - Fix First 9 frames not showing.
 - Fix Texture Loader fallback texture bug.

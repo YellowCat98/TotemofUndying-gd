@@ -13,5 +13,11 @@
 ### If it isn't obvious, this mod is made for fun, and is meant to be used for fun. I don't condone cheating in any way.
 
 # CREDITS:
-Saritahh: Mod idea and helped by making the frame-by-frame totem of undying animation
-Geode SDK Discord: overall helping with my stupid questions!
+>- Saritahh:
+>- Mod idea
+>- Making the frame-by-frame totem of undying animation
+>- Helped fixing the delay of the sfx after triggering it
+>- feedback before releasing the mod
+
+>- [Geode SDK Discord server](https://discord.gg/geode):
+>- overall helping with my stupid questions!
