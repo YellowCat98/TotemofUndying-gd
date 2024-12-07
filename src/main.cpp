@@ -8,7 +8,6 @@
 #include <Geode/modify/EndLevelLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/GJGarageLayer.hpp>
-#include <capeling.garage-stats-menu/include/StatsDisplayAPI.h>
 
 using namespace geode::prelude;
 using namespace keybinds;
@@ -37,14 +36,25 @@ $execute {
 class $modify(GJGarageLayerHook, GJGarageLayer) {
 	bool init() {
 		if (!GJGarageLayer::init()) return false;
-		auto statMenu = this->getChildByID("capeling.garage-stats-menu/stats-menu");
+		auto diamondshardLabel = this->getChildByID("diamond-shards-label");
+		auto diamondshardSprite = this->getChildByID("diamond-shards-icon");
 
-		auto totemItem = StatsDisplayAPI::getNewItem("totem-count"_spr, CCSprite::create("totem.png"_spr), Mod::get()->getSavedValue<int64_t>("totem-count"));
+		auto totemSprite = CCSprite::create("totem.png"_spr);
+		totemSprite->setScale(diamondshardSprite->getScale());
+		totemSprite->setPosition({diamondshardSprite->getPositionX(), diamondshardSprite->getPositionY() - 15});
+		totemSprite->setID("totem-icon"_spr);
 
-		if (statMenu) {
-			statMenu->addChild(totemItem);
-			statMenu->updateLayout();
-		}
+		auto totemLabel = CCLabelBMFont::create(std::to_string(Mod::get()->getSavedValue<int64_t>("totem-count")).c_str(), "bigFont.fnt");
+
+		float labelWidth = totemLabel->getContentSize().width * totemLabel->getScaleX();
+		float spriteWidth = totemSprite->getContentSize().width * totemSprite->getScaleX();
+
+		totemLabel->setScale(diamondshardLabel->getScale());
+		totemLabel->setPosition({diamondshardLabel->getPositionX() - spriteWidth / 2 - labelWidth / 2 - 10.0f, totemSprite->getPositionY()});
+		totemLabel->setID("totem-label"_spr);
+
+		this->addChild(totemLabel);
+		this->addChild(totemSprite);
 		return true;
 	}
 };

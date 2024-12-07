@@ -1,3 +1,6 @@
+# 1.1.2
+- 2.2074 support
+
 # 1.1.1
 - Add particles
 - Make it so that the timer is tinted red instead of green

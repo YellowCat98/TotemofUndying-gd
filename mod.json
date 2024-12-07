@@ -1,14 +1,14 @@
 {
-	"geode": "3.7.1",
+	"geode": "4.0.1",
 	"gd": {
-		"win": "2.206",
-		"android": "2.206",
-		"mac": "2.206",
-		"ios": "2.206"
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
 	},
 	"id": "yellowcat98.totem_of_undying",
 	"name": "Totem of Undying",
-	"version": "v1.1.1",
+	"version": "v1.1.2",
 	"developer": "YellowCat98",
 	"description": "",
 	"tags": [
@@ -33,17 +33,12 @@
 		{
 			"id": "geode.custom-keybinds",
 			"importance": "required",
-			"version": ">=1.9.0"
+			"version": ">=1.10.0"
 		},
 		{
 			"id": "geode.node-ids",
 			"importance": "required",
-			"version": ">=1.14.0"
-		},
-		{
-			"id": "capeling.garage-stats-menu",
-			"importance": "required",
-			"version": ">=1.0.1"
+			"version": ">=1.18.0"
 		}
 	],
 	"settings": {
